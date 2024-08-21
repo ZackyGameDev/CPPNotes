@@ -13,4 +13,23 @@ int main() {
     std::cout << "What am I even doing at this point" << std::endl;
 
     Log("This log function is defined in the log.cpp file");
+
+    int x = 5;
+
+    bool comparisionResult = x == 5;
+
+    if (comparisionResult) {
+        Log("Real");
+    }
+
+
+    const char* ptr = "hello";
+    const char* nptr = nullptr;
+
+    if (ptr) Log(ptr);
+    if (nptr) Log(nptr);
+    else Log("nptr is null");
+
+    std::cin.get();
+
 }

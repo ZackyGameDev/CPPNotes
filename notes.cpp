@@ -84,14 +84,14 @@ static int multiply(int a, int b) {
 
 
 // IMAGINE THIS FUNCTION DEFINITION WAS IN LOG.CPP, NOT HERE.
-inline int AnotherLog(const char* string_of_chracters_to_log) {
+inline void AnotherLog(const char* string_of_chracters_to_log) {
     std::cout << string_of_chracters_to_log << std::endl;
 }
 
 // now this function that i have just defined will work similarly to #include.
 // while runtime, when this function is called, then the compilation line, instead of 
 // going to the definition of the function and then execution happening there,
-// the definition contents of the function will simply be cophy pasted to where the function
+// the definition contents of the function will simply be copy pasted to where the function
 // was called and then the execution will happen in that place.
 // "it simply takes our function body and replaces the call with it"
 
@@ -122,7 +122,7 @@ inline int AnotherLog(const char* string_of_chracters_to_log) {
 // cuz in C++ theres no set rules, you can be very flexible with what sort of data type you choose to use
 // for what sort of data. but still lets look at some exmaples of variable types;
 
-int primitive_variables() {
+void primitive_variables() {
     
     int an_integer_variable = 8; // int data type is 4 bytes large typically. but it depends on the compiler. 
     // this is a signed integer. you can go from about -2b to +2b
@@ -177,6 +177,9 @@ int primitive_variables() {
     //float& what; // gives error
     //char& what = 1; this may be wrong. we'll go into details some other time for these two concepts
     // (they're way too deep)
+
+    // minor last tidbit, bool is a 1 byte data type. but it only stores true or false, why does it need more than
+    // 1 bit? well, it doesn't. it just uses 1 byte because its more easier to allocate than a single bit. 
 
 }
 
@@ -290,3 +293,160 @@ int death;
 // it seems like some convention. these "standard library" files for C++ lack the .h suffix. but the ones for C do have the
 // .h suffix, so i guess its like some soft way to differentiate the two standard library files. (e.g. 'stdlib.h' is of C, but
 // 'iostream' is of C++)
+
+
+
+// BRANCHING AND CONDITIONS 
+
+// In C++ when we use stuff like if else, its called branches.
+// because when our final compiled machine code is running, an if statement,
+// kinda involves jumping from one place to another in memory where your entire program is loaded.
+// thats why if statements are kinda slow, and using too many if statemtsn and branching is not ideal,
+// but computers are fast so we dont need to worry about that at small scale.
+// also we'll go into more detail about this some other time, right now lets just go over simple if statement.
+
+int ifstatements() {
+    int x = 5;
+    // now i wanna cout something only of x is equal to 5. to check that we do something called
+    // a COMPARISION.
+    // its basically like python.
+    bool conditionresult = x == 5;
+    // the result of x == 5 will be stored into `condition` variable. double equal sign being equality operator.
+    // remember, all operators under the hood are just functions. the reason the operator works the way it does is
+    // because its been overloaded in the C standard library. in other words some dude must've written a function
+    // like "im gonna accept two integers and check their memory to check if they're true, and if yes then i'll 
+    // return true, else false." and that was equality operator.
+
+    // now to finally plug it into an if statement,
+    if (conditionresult == true) {} // you could do this, theres nothing wrong. 
+    // but its kinda unnecessary because all `if` does is check if theres "true" in front of it or not.
+    // if there isn't true or false or anythng, it evaluates whatever you give to it and then checks if after
+    // evaluating it gets true or false. right now what would happen is if statement would evaluate (conditionresult == true)
+    // and then get "true". but remember the conditionresult variable is already a boolean. it itself is true or false, so you can 
+    // directly just type it without any extra comparision.
+    if (conditionresult) {} // also works (lot clearner too)
+    // now what to do after the condition is true? where to branch to? thats what you write in the curly bracket.
+
+    if (conditionresult) {
+        std::cout << "real";
+    }
+
+    // if condition is false, the lines insidee the curly brackets are completely skipped over.
+
+    // a more in depth explanation at x86 assembly level can be found at:
+    // https://youtu.be/qEgCT87KOfc?t=433
+
+    
+    // also if your if body is a single line, then you dont need curly brackets.
+
+    if (conditionresult) std::cout << "This is single line if";
+
+    if (conditionresult) 
+        std::cout << "This is single line if";
+    // both are okay, indentation doesnt matter in C++ whatsoever.
+
+
+    // also behind the hood what if statement actually checks is "is the given value 0 or not". 0 is considered false, 
+    // EVERYTHING ELSE is considered true. kinda non intuitive i know, but thats how it works at technical level.
+    // for that exact reason, the following code is perfectly okay and the if statement condition check will succeed. 
+    const char c = 'H';
+
+    if (c) Log("Real");
+    // this will log "Real" because ptr is not equal to 0. and hence the if statement will evaluate as true.
+
+    // another common use of this property is to check if pointers are null or not. 
+    const char* ptr = "Hello there";
+    if (ptr) Log(ptr);
+    // if pointer was null, ptr = 0, and would be false. dont worry too much we'll study pointers later in detail
+    // some other time. 
+
+    const char* ptr = "hello";
+    if (ptr)    
+        Log(ptr);
+    else if (ptr == "hello")
+        Log("ptr is hello!");
+    else
+        Log("Ptr is null!");
+    
+    // observe how above, the else if bit will never be executed cuz of the logic chain. 
+    // also theres no "elif" in C++ like python, the else if here is actually cleverly hidden
+    // syntax, we're basically putting another if statement branch in an else block
+    // below is what the whole thing would look like if we used proper curly brackets for everything.
+    const char* ptr = "hello";
+    if (ptr) {    
+        Log(ptr);
+    } else {
+        if (ptr == "hello") {
+            Log("ptr is hello!");
+        } else {
+            Log("Ptr is null!");
+        }
+    } 
+    
+    // i have a feeling my way of writing `} else {` in a single line would make a C++ veteran really upset...
+
+}
+
+
+
+void loops() {
+
+    // heres what a simple for loop looks like
+    for (int i = 0; i < 5; i++) {
+        Log("henlo");
+    }
+
+    // syntax:
+    // for (pre; condition; post) {}
+    // the "pre" is code to evaluate right before the first iteration. 
+    // the 'condition' is evaluated right before the start of every iteration.
+    // the 'post' is evaluated at the END of every iteration.
+    // 'i' is used as convention theres no need to stick to that single letter. or any convention in general.
+    // the way the loop works is firstly the 'pre' is executed. then the looping starts. and C++ will check if the 
+    // 'condition' bit is false. if it is false/0, then it skips the iteration and jumps to 'post'. otherwise
+    // the code inside the for loop is executed once, and then it checks again. the process repeats.
+    // the for loop above is behavioraly same as the one below:
+    int i = 0;
+    for ( ; i < 5; ) {
+        Log("henlo");
+        i++;
+    }
+    
+    // the for loop above is ALSO behavioraly same as the one below:
+    int i = 0;
+    bool condition = true;
+    for ( ; condition; ) {
+        Log("henlo");
+        i++;
+        if (!(i<5)) 
+            condition = false;
+    }
+    // remember all for loop checks for the condition is if it is false or not. if you dont put anything there,
+    // obviously that means you didnt put false there, and thus that counts as true. and the for loop will never stop.
+    // and keep going infinitely.
+
+
+    // WHILE LOOP
+    // while loops are similar to for but without the pre and post bits.
+    int i = 0;
+    while (i < 5) {
+        Log("henlo");
+        i++;
+    }
+    // above while loop is behavioraly same as the for loop we wrote above.
+    // so which one you wanna use depends on your style and preference and needs.
+    // technically they both do the same thing, which is just loop over some code
+    // with some given stop condition.
+
+    // theres also do-while, which is similar to while, except the stop condition is checked AFTER the iteration.
+    // so even if the condition is false from the start, the code body will run AT LEAST ONCE no matter what. 
+
+    int i = 0;
+    do {
+        Log("hello");
+        i++;
+    } while (i < 5);
+    // above will print "hello" FIVE TIMES, just like for and while above, however its different functionally because the 
+    // checking is happening after the code. here i will be 1, 2, 3, 4, 5. for `for` and `while`, i was 0, 1, 2, 3, 4.
+
+}
